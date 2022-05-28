@@ -10,7 +10,7 @@ RUN pip install -r requirements.txt
 
 COPY ./ /home/bloggy
 
-RUN python manage.py makemigrations home
+RUN python manage.py migrate
 
 EXPOSE 8000
 
