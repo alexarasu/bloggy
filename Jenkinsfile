@@ -32,5 +32,14 @@ pipeline {
                 }
             }
         }
+
+        // Running our image
+        stage('Deploy image'){
+            steps{
+                script{
+                    sh 'docker run --name bloggy -d -p 8000:8000 bloggy:latest'
+                }
+            }
+        }
     }
 }
