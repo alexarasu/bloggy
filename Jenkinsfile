@@ -1,9 +1,15 @@
 pipeline {
     agent any
     stages {
-        stage('build') {
+        stage('BEGIN') {
             steps {
-                sh 'echo "HELLO THIS WORKS !"'
+                sh 'echo "PIPELINE BEGINS"'
+            }
+        }
+
+        stage('Cloning Git') {
+            steps {
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '', url: 'https://github.com/alexarasu/bloggy.git']]])     
             }
         }
     }
