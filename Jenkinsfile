@@ -1,6 +1,28 @@
-// This is a dummy content
-pipeline {
-    agent any
+@Library(['piper-lib','piper-lib-os']) _
+try {
+    if (env.BRANCH_NAME == 'main') {
+        try {
+            timeout(time: 2, unit: 'HOURS') { input message: 'Shall we proceed the cloning the repo' }
+        } catch (err) {
+            currentBuild.result = "ABORTED"
+            user = err.causes.get(0)
+            throw err
+        }
+
+        stage('Cloning Git') {
+            node {
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '', url: 'https://github.com/alexarasu/bloggy.git']]])     
+            }
+        }
+    }
+} catch (Throwable err) {
+    // catch all exceptions
+    globalPipelineEnvironment.addError(this, err)
+    throw err
+} 
+
+// pipeline {
+//     agent any
 
     // environment {
     //     AWS_ACCOUNT_ID="YOUR_ACCOUNT_ID_HERE"
@@ -20,11 +42,11 @@ pipeline {
     //         }
     //     }
         
-        stage('Cloning Git') {
-            steps {
-                checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '', url: 'https://github.com/alexarasu/bloggy.git']]])     
-            }
-        }
+        // stage('Cloning Git') {
+        //     steps {
+        //         checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '', url: 'https://github.com/alexarasu/bloggy.git']]])     
+        //     }
+        // }
   
     // Building Docker images
     // stage('Building image') {
@@ -46,4 +68,4 @@ pipeline {
     //     }
     //   }
     // }
-}
+// }
