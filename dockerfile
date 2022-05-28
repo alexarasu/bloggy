@@ -10,6 +10,8 @@ RUN pip install -r requirements.txt
 
 COPY ./ /home/bloggy
 
+RUN python manage.py makemigrations home
+
 EXPOSE 8000
 
 ENTRYPOINT ["python","manage.py","runserver","0.0.0.0:8000"]
